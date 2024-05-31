@@ -3,13 +3,12 @@ import fs from 'fs'
 import path from 'path'
 
 type Metadata = {
-  name: string
+  title: string
   publishedAt: string
   summary: string
-  link?: string
-  github?: string
   image?: string
 }
+
 
 function parseFrontmatter(fileContent: string) {
   let frontmatterRegex = /---\s*([\s\S]*?)\s*---/
@@ -52,8 +51,8 @@ function getMDXData(dir) {
   })
 }
 
-export function getBlogPosts() {
-  return getMDXData(path.join(process.cwd(), 'app', 'blog', 'posts'))
+export function getPortfolioProjects() {
+  return getMDXData(path.join(process.cwd(), 'app', 'portfolio', 'projects'))
 }
 
 export function formatDate(date: string, includeRelative = false) {
