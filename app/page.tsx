@@ -1,4 +1,6 @@
 import { BlogPosts } from 'app/components/posts'
+import Portfolio from './portfolio/[slug]/page'
+import { PortfolioProjects } from './components/projects'
 
 export default function Page() {
   return (
@@ -14,6 +16,10 @@ export default function Page() {
           areas both inside and outside software development.`}
       </p>
       <div className="my-8">
+        <h2>Projects</h2>
+        <PortfolioProjects />
+        <br></br>
+        <h2>Blog</h2>
         <BlogPosts />
       </div>
     </section>

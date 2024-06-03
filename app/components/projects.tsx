@@ -3,7 +3,6 @@ import { formatDate, getPortfolioProjects } from 'app/portfolio/utils'
 
 export function PortfolioProjects() {
   let allProjects = getPortfolioProjects()
-  console.log("all projects", allProjects);
 
   return (
     <div>
@@ -17,21 +16,46 @@ export function PortfolioProjects() {
           return 1
         })
         .map((project) => (
-          <Link
-            key={project.slug}
-            className="flex flex-col space-y-1 mb-4"
-            href={`/portfolio/${project.slug}`}
-          >
-            <div className="w-full flex flex-col md:flex-row space-x-0 md:space-x-2">
-              <p className="text-neutral-600 dark:text-neutral-400 w-[100px] tabular-nums">
+          <div className="flex space-x-">
+            <Link
+              key={project.slug}
+              className="flex flex-col items-center"
+              href={`/portfolio/${project.slug}`}
+            >
+              <p className="text-neutral-600 dark:text-neutral-400 w-[100px] mr-4 tabular-nums">
                 {formatDate(project.metadata.publishedAt, false)}
               </p>
-              <p className="text-neutral-900 dark:text-neutral-100 tracking-tight">
+            </Link>
+            <Link
+              key={`${project.slug}-link`}
+              className="flex flex-col items-center"
+              href={`/portfolio/${project.slug}`}
+            >
+              <p className="text-neutral-900 dark:text-neutral-100 tracking-tight mr-4 ">
                 {project.metadata.title}
               </p>
-            </div>
-          </Link>
-        ))}
-    </div>
+            </Link>
+            <Link
+              key={`${project.slug}-link`}
+              className="flex flex-col items-center"
+              href={project.metadata.link}
+            >
+              <p className="text-neutral-900 dark:text-neutral-100 tracking-tight mr-4">
+                &#128279;
+              </p>
+            </Link>
+            <Link
+              key={`${project.slug}-source`}
+              className="flex flex-col items-center"
+              href={project.metadata.source}
+            >
+              <p className="text-neutral-900 dark:text-neutral-100 tracking-tight align-right">
+                &lt;/&gt;
+              </p>
+            </Link>
+          </div>
+        ))
+      }
+    </div >
   )
 }
