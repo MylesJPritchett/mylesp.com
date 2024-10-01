@@ -1,6 +1,5 @@
 import { BlogPosts } from 'app/components/posts'
-import Portfolio from './portfolio/[slug]/page'
-import { PortfolioProjects } from './components/projects'
+import { PortfolioProjects } from 'app/components/projects'
 
 export default function Page() {
   return (

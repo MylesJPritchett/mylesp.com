@@ -80,8 +80,8 @@ export function formatDate(date: string, includeRelative = false) {
     formattedDate = 'Today'
   }
 
-  let fullDate = targetDate.toLocaleString('en-us', {
-    month: 'long',
+  let fullDate = targetDate.toLocaleString('en-au', {
+    month: 'short',
     day: 'numeric',
     year: 'numeric',
   })
