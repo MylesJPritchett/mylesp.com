@@ -9,9 +9,9 @@ export default async function sitemap() {
     lastModified: post.metadata.publishedAt,
   }))
 
-  let projects = getPortfolioProjects().map((post) => ({
+  let projects = getPortfolioProjects().map((project) => ({
     url: `${baseUrl}/portfolio/${project.slug}`,
-    lastModified: post.metadata.publishedAt,
+    lastModified: project.metadata.publishedAt,
   }))
 
 
@@ -25,5 +25,5 @@ export default async function sitemap() {
     lastModified: new Date().toISOString().split('T')[0],
   }))
 
-  return [...routes, ...blogs]
+  return [...routes, ...blogs, ...projectRoutes, ...projects]
 }
