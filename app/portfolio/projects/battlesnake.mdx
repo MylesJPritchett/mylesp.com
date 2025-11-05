@@ -3,18 +3,14 @@ title: "Battlesnake AI"
 publishedAt: "2024-04-06"
 summary: "a simple AI (in the game sense) for the online code driven game Battlesnake"
 source: "https://github.com/MylesJPritchett/ferisss"
-link: "https://mylesp.com/api/battlesnake"
 ---
 
 This is an AI for the online code driven game [Battlesnake](https://battlesnake.com). The AI is written in Rust and uses the Rocket web framework to communicate with the game server.
 
 Each turn, the battlesnake servers send a JSON payload to the AI with the current game state. The AI then calculates the next move and returns a JSON payload with the move to make.
 
-My AI uses a variety of algorithms to determine the best move to make. Is uses a modified A* algorithm to find the shortest path to food, and a modified flood fill algorithm to find the largest area of the board that is safe to move to.
+My AI uses a variety of algorithms to determine the best move to make. Is uses a modified A\* algorithm to find the shortest path to food, and a modified flood fill algorithm to find the largest area of the board that is safe to move to.
 
 The limitation of this AI is that it is not able to look ahead more than one move. To combat this I plan on implementing a monte carlo tree search algorithm to simulate possible moves and determine the best move to make.
 
-[API Endpoint](https://mylesp.com/api/battlesnake)
-
 [Source code on GitHub](https://github.com/MylesJPritchett/ferisss)
-
