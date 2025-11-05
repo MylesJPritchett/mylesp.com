@@ -30,14 +30,18 @@ export function PortfolioProjects() {
                   {project.metadata.title}
                 </Link>
                 <div className="flex space-x-2">
-                  <a
-                    href={project.metadata.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-neutral-900 dark:text-neutral-100 tracking-tight mr-2"
-                  >
-                    &#128279;
-                  </a>
+                  {project.metadata.link &&
+                    (
+                      <a
+                        href={project.metadata.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-neutral-900 dark:text-neutral-100 tracking-tight mr-2"
+                      >
+                        &#128279;
+                      </a>
+                    )
+                  }
                   <a
                     href={project.metadata.source}
                     target="_blank"
