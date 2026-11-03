@@ -30,7 +30,10 @@ export type Post = {
 }
 
 export type ContentOptions = {
-  /** Directory of MDX files to read. Defaults to the site's real content. */
+  /**
+   * Directory of MDX files to read. Defaults to the site's real content, or
+   * for Projects to PROJECTS_DIR when set (the smoke tests build with it).
+   */
   dir?: string
 }
 
@@ -152,7 +155,9 @@ function projectOrder(a: Project, b: Project) {
   return newestFirst(a, b)
 }
 
-export function getProjects({ dir = PROJECTS_DIR }: ContentOptions = {}): Project[] {
+export function getProjects({
+  dir = process.env.PROJECTS_DIR || PROJECTS_DIR,
+}: ContentOptions = {}): Project[] {
   return readMDX(dir)
     .map(({ slug, frontmatter, content }) => ({
       slug,

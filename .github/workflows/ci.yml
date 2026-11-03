@@ -27,6 +27,5 @@ jobs:
 
       - run: pnpm build
 
+      # Builds again, with the smoke fixture Projects added.
       - run: pnpm test:smoke
-        env:
-          SMOKE_SKIP_BUILD: '1'
