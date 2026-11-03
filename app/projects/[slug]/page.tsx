@@ -3,7 +3,7 @@ import { CustomMDX } from 'app/components/mdx'
 import { InProgress } from 'app/components/in-progress'
 import { StackDiagram } from 'app/components/stack-diagram'
 import { formatDate, getProject, getProjects } from 'app/content'
-import { authorPerson, baseUrl, imageUrl } from 'app/site'
+import { articleMetadata, authorPerson, baseUrl, imageUrl } from 'app/site'
 
 export async function generateStaticParams() {
   let projects = getProjects()
@@ -20,36 +20,7 @@ export async function generateMetadata({ params }: PageProps<'/projects/[slug]'>
     return
   }
 
-  let {
-    title,
-    publishedAt: publishedTime,
-    summary: description,
-    image,
-  } = project
-  let ogImage = imageUrl(title, image)
-
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      type: 'article',
-      publishedTime,
-      url: `${baseUrl}/projects/${project.slug}`,
-      images: [
-        {
-          url: ogImage,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: [ogImage],
-    },
-  }
+  return articleMetadata(`/projects/${project.slug}`, project)
 }
 
 export default async function ProjectPage({ params }: PageProps<'/projects/[slug]'>) {

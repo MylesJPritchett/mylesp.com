@@ -25,3 +25,42 @@ export function imageUrl(title: string, image?: string) {
     ? new URL(image, baseUrl).href
     : `${baseUrl}/og?title=${encodeURIComponent(title)}`
 }
+
+/**
+ * The page metadata for a Project or Post at the given path: an Open Graph
+ * article and a large Twitter card, both using its preview image.
+ */
+export function articleMetadata(
+  path: string,
+  {
+    title,
+    publishedAt: publishedTime,
+    summary: description,
+    image,
+  }: { title: string; publishedAt: string; summary: string; image?: string }
+) {
+  let ogImage = imageUrl(title, image)
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article' as const,
+      publishedTime,
+      url: `${baseUrl}${path}`,
+      images: [
+        {
+          url: ogImage,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image' as const,
+      title,
+      description,
+      images: [ogImage],
+    },
+  }
+}
