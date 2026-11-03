@@ -11,8 +11,9 @@ export async function generateStaticParams() {
   }))
 }
 
-export function generateMetadata({ params }) {
-  let project = getPortfolioProjects().find((project) => project.slug === params.slug)
+export async function generateMetadata({ params }: PageProps<'/portfolio/[slug]'>) {
+  let { slug } = await params
+  let project = getPortfolioProjects().find((project) => project.slug === slug)
   if (!project) {
     return
   }
@@ -49,8 +50,9 @@ export function generateMetadata({ params }) {
   }
 }
 
-export default function Portfolio({ params }) {
-  let project = getPortfolioProjects().find((project) => project.slug === params.slug)
+export default async function Portfolio({ params }: PageProps<'/portfolio/[slug]'>) {
+  let { slug } = await params
+  let project = getPortfolioProjects().find((project) => project.slug === slug)
 
   if (!project) {
     notFound()
