@@ -1,3 +1,5 @@
+import { email, externalLinkProps, github, linkedin } from 'app/links'
+
 function ArrowIcon() {
   return (
     <svg
@@ -15,22 +17,12 @@ function ArrowIcon() {
   )
 }
 
-const mainLinks = [
-  { label: 'linkedin', href: 'https://www.linkedin.com/in/myles-pritchett/' },
-  { label: 'email', href: 'mailto:mylesjpritchett@gmail.com' },
-  { label: 'github', href: 'https://github.com/MylesJPritchett/' },
-]
+const mainLinks = [linkedin, email, github]
 
 const minorLinks = [
   { label: 'rss', href: '/rss' },
   { label: 'view source', href: 'https://github.com/MylesJPritchett/mylesp.com' },
 ]
-
-function externalProps(href: string) {
-  return href.startsWith('mailto:')
-    ? {}
-    : { target: '_blank', rel: 'noopener noreferrer' }
-}
 
 export default function Footer() {
   return (
@@ -41,7 +33,7 @@ export default function Footer() {
             <a
               className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
               href={href}
-              {...externalProps(href)}
+              {...externalLinkProps(href)}
             >
               <ArrowIcon />
               <p className="ml-2 h-7">{label}</p>
@@ -56,7 +48,7 @@ export default function Footer() {
             key={href}
             className="transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
             href={href}
-            {...externalProps(href)}
+            {...externalLinkProps(href)}
           >
             {label}
           </a>

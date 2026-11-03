@@ -1,13 +1,10 @@
 import { PostList } from 'app/components/posts'
 import { ProjectList } from 'app/components/projects'
+import { email, externalLinkProps, github, linkedin } from 'app/links'
 
 const resumeHref = '/Myles-Pritchett-Resume.pdf'
 
-const contactLinks = [
-  { label: 'email', href: 'mailto:mylesjpritchett@gmail.com' },
-  { label: 'linkedin', href: 'https://www.linkedin.com/in/myles-pritchett/' },
-  { label: 'github', href: 'https://github.com/MylesJPritchett/' },
-]
+const contactLinks = [email, linkedin, github]
 
 const experience = [
   {
@@ -52,10 +49,7 @@ function ContactStrip() {
           <a
             className={linkClass}
             href={href}
-            {...(href.startsWith('http') && {
-              target: '_blank',
-              rel: 'noopener noreferrer',
-            })}
+            {...externalLinkProps(href)}
           >
             {label}
           </a>
