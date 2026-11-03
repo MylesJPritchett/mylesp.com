@@ -22,4 +22,16 @@ describe('RSS feed', () => {
     expect(item.description).toBe(post.summary)
     expect(item.link).toBe('https://mylesp.com/blog/rust-and-wasm')
   })
+
+  test.each([
+    ['AEST', '2024-07-15', 'Sun, 14 Jul 2024 14:00:00 GMT'],
+    ['AEDT', '2024-01-15', 'Sun, 14 Jan 2024 13:00:00 GMT'],
+    ['AEST, the day daylight saving starts', '2024-10-06', 'Sat, 05 Oct 2024 14:00:00 GMT'],
+    ['AEDT, the day daylight saving ends', '2024-04-07', 'Sat, 06 Apr 2024 13:00:00 GMT'],
+  ])('dates a Post at midnight in Sydney (%s)', (_zone, publishedAt, pubDate) => {
+    let xml = rssFeed([{ ...post, publishedAt }])
+
+    let item = new XMLParser().parse(xml).rss.channel.item
+    expect(item.pubDate).toBe(pubDate)
+  })
 })
