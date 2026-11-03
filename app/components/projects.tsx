@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { formatDate, getProjects } from 'app/content'
 import { InProgress } from 'app/components/in-progress'
+import { StackTags } from 'app/components/stack-tags'
 
 export function PortfolioProjects() {
   let allProjects = getProjects()
@@ -47,6 +48,7 @@ export function PortfolioProjects() {
                 </a>
               </div>
             </div>
+            <StackTags title={project.title} stack={project.stack} />
           </div>
         )
       })}

@@ -5,6 +5,14 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { parse } from 'yaml'
 
+/** The fixed set of Layers, in the order a Stack is shown. */
+export const LAYERS = ['Frontend', 'Backend', 'Data', 'AI', 'Infra', 'Testing'] as const
+
+export type Layer = (typeof LAYERS)[number]
+
+/** A Project's Stack: the Layers it uses, in Layer order, each with its technologies. */
+export type Stack = { layer: Layer; technologies: string[] }[]
+
 export type Project = {
   slug: string
   title: string
@@ -17,6 +25,7 @@ export type Project = {
   order?: number
   /** Still being actively built. Set with `status: in-progress`. */
   inProgress: boolean
+  stack?: Stack
   content: string
 }
 
@@ -46,6 +55,7 @@ type Frontmatter = {
   optional<K extends string>(key: K): { [P in K]?: string }
   optionalInteger<K extends string>(key: K): { [P in K]?: number }
   oneOf<V extends string>(key: string, allowed: readonly V[]): V | undefined
+  stack(): { stack?: Stack }
 }
 
 type MDXFile = {
@@ -98,6 +108,28 @@ function readFrontmatter(file: string, data: Record<string, unknown>): Frontmatt
       if (value === undefined) return undefined
       return allowed.find((option) => option === value) ??
         fail(`"${key}" must be one of ${allowed.map((option) => `"${option}"`).join(', ')}, got "${value}"`)
+    },
+    stack() {
+      let value = data.stack
+      if (value === undefined || value === null) return {}
+      if (typeof value !== 'object' || Array.isArray(value)) {
+        return fail(`"stack" must map each Layer to a list of technologies`)
+      }
+      let layers = value as Record<string, unknown>
+      for (let [layer, technologies] of Object.entries(layers)) {
+        if (!(LAYERS as readonly string[]).includes(layer)) {
+          fail(`unknown Layer "${layer}" in "stack"; use ${LAYERS.join(', ')}`)
+        }
+        let isList =
+          technologies === null ||
+          (Array.isArray(technologies) && technologies.every((t) => typeof t === 'string'))
+        if (!isList) fail(`Layer "${layer}" in "stack" must be a list of technology names`)
+      }
+      let stack = LAYERS.flatMap((layer) => {
+        let technologies = layers[layer] as string[] | null | undefined
+        return technologies?.length ? [{ layer, technologies }] : []
+      })
+      return stack.length ? { stack } : {}
     },
   }
 }
@@ -169,6 +201,7 @@ export function getProjects({
       ...frontmatter.optional('image'),
       ...frontmatter.optionalInteger('order'),
       inProgress: frontmatter.oneOf('status', ['in-progress']) === 'in-progress',
+      ...frontmatter.stack(),
       content,
     }))
     .sort(projectOrder)
