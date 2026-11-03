@@ -17,7 +17,7 @@ export function PortfolioProjects() {
                 {formatDate(project.publishedAt)}
               </p>
               <Link
-                href={`/portfolio/${project.slug}`}
+                href={`/projects/${project.slug}`}
                 className="text-neutral-900 dark:text-neutral-100 tracking-tight flex-1"
               >
                 {project.title}
