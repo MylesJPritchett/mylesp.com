@@ -1,3 +1,6 @@
+// The one place Project and Post MDX is read from disk. Frontmatter is parsed
+// as YAML and validated; invalid content throws an error naming the file, which
+// fails the static build.
 import fs from 'node:fs'
 import path from 'node:path'
 import { parse } from 'yaml'
@@ -153,6 +156,10 @@ export function getPosts({ dir = POSTS_DIR }: ContentOptions = {}): Post[] {
     .sort(newestFirst)
 }
 
+export function getPost(slug: string, options?: ContentOptions): Post | undefined {
+  return getPosts(options).find((post) => post.slug === slug)
+}
+
 const dateFormat = new Intl.DateTimeFormat('en-AU', {
   timeZone: 'Australia/Sydney',
   day: 'numeric',
@@ -165,8 +172,4 @@ export function formatDate(date: string): string {
   let [year, month, day] = date.split('-').map(Number)
   // Noon UTC falls on the same calendar day in Sydney (UTC+10 or +11).
   return dateFormat.format(new Date(Date.UTC(year, month - 1, day, 12)))
-}
-
-export function getPost(slug: string, options?: ContentOptions): Post | undefined {
-  return getPosts(options).find((post) => post.slug === slug)
 }

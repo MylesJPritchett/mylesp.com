@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation'
 import { CustomMDX } from 'app/components/mdx'
-import { formatDate, getBlogPosts } from 'app/blog/utils'
+import { formatDate, getPost, getPosts } from 'app/content'
 import { baseUrl } from 'app/sitemap'
 
 export async function generateStaticParams() {
-  let posts = getBlogPosts()
+  let posts = getPosts()
 
   return posts.map((post) => ({
     slug: post.slug,
@@ -13,7 +13,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<'/blog/[slug]'>) {
   let { slug } = await params
-  let post = getBlogPosts().find((post) => post.slug === slug)
+  let post = getPost(slug)
   if (!post) {
     return
   }
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps<'/blog/[slug]'>) {
     publishedAt: publishedTime,
     summary: description,
     image,
-  } = post.metadata
+  } = post
   let ogImage = image ? image : `${baseUrl}/og?title=${encodeURIComponent(title)}`
 
   return {
@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: PageProps<'/blog/[slug]'>) {
 
 export default async function Blog({ params }: PageProps<'/blog/[slug]'>) {
   let { slug } = await params
-  let post = getBlogPosts().find((post) => post.slug === slug)
+  let post = getPost(slug)
 
   if (!post) {
     notFound()
@@ -67,13 +67,13 @@ export default async function Blog({ params }: PageProps<'/blog/[slug]'>) {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'BlogPosting',
-            headline: post.metadata.title,
-            datePublished: post.metadata.publishedAt,
-            dateModified: post.metadata.publishedAt,
-            description: post.metadata.summary,
-            image: post.metadata.image
-              ? `${baseUrl}${post.metadata.image}`
-              : `/og?title=${encodeURIComponent(post.metadata.title)}`,
+            headline: post.title,
+            datePublished: post.publishedAt,
+            dateModified: post.publishedAt,
+            description: post.summary,
+            image: post.image
+              ? `${baseUrl}${post.image}`
+              : `/og?title=${encodeURIComponent(post.title)}`,
             url: `${baseUrl}/blog/${post.slug}`,
             author: {
               '@type': 'Person',
@@ -83,11 +83,11 @@ export default async function Blog({ params }: PageProps<'/blog/[slug]'>) {
         }}
       />
       <h1 className="title font-semibold text-2xl tracking-tighter">
-        {post.metadata.title}
+        {post.title}
       </h1>
       <div className="flex justify-between items-center mt-2 mb-8 text-sm">
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
-          {formatDate(post.metadata.publishedAt)}
+          {formatDate(post.publishedAt)}
         </p>
       </div>
       <article className="prose">
