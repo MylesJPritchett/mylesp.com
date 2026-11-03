@@ -10,7 +10,7 @@ export const role = 'Fullstack Software Engineer'
 
 export const siteDescription =
   `${author} is a ${role} in Sydney, open to new roles. ` +
-  'See the projects he has built in TypeScript, Next.js and Rust.'
+  'Projects built with TypeScript, Next.js and Rust.'
 
 /** The author of every Project and Post, as schema.org structured data. */
 export const authorPerson = { '@type': 'Person', name: author, url: baseUrl }
