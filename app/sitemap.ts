@@ -1,8 +1,6 @@
 import { getPosts, getProjects } from 'app/content'
 import { baseUrl } from 'app/site'
 
-export { baseUrl }
-
 export default async function sitemap() {
   let today = new Date().toISOString().split('T')[0]
 
