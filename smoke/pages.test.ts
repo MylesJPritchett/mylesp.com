@@ -1,6 +1,6 @@
 import { readdirSync } from 'node:fs'
 import { basename } from 'node:path'
-import { describe, expect, test } from 'vitest'
+import { describe, expect, inject, test } from 'vitest'
 import { get } from './http'
 
 function slugsIn(dir: string) {
@@ -9,7 +9,8 @@ function slugsIn(dir: string) {
     .map((file) => basename(file, '.mdx'))
 }
 
-const projectSlugs = slugsIn('app/projects/projects')
+// The Projects the smoke build was made with, fixtures included.
+const projectSlugs = slugsIn(inject('projectsDir'))
 const postSlugs = slugsIn('app/blog/posts')
 
 describe('pages', () => {

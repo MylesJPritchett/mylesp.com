@@ -18,7 +18,7 @@ declare module 'vitest' {
 }
 
 const nextCli = 'node_modules/next/dist/bin/next'
-const realProjectsDir = 'app/portfolio/projects'
+const realProjectsDir = 'app/projects/projects'
 const fixtureProjectsDir = 'smoke/fixtures/projects'
 
 /** A directory of the real Projects plus the smoke fixtures. */
