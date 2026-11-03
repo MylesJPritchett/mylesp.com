@@ -21,4 +21,45 @@ describe('home page', () => {
     let links = main?.querySelectorAll('a').map((a) => a.getAttribute('href'))
     expect(links).toContain(href)
   })
+
+  test.each([
+    ['Fullstack Software Engineer', 'Zion Metrics', 'Jan 2026 – Nov 2026'],
+    ['Software Developer', 'Unicard Systems', 'Apr 2023 – Jan 2026'],
+    [
+      'Software Support and Deployment',
+      'Unicard Systems',
+      'Apr 2022 – Apr 2023',
+    ],
+    ['Software Developer and Support', 'Lymlive Media', 'Oct 2021 – Feb 2022'],
+  ])('lists the Experience %s at %s, %s', async (title, employer, dates) => {
+    let page = await get('/')
+    let roles = page.html
+      .querySelectorAll('#experience li')
+      .map((role) => role.text.replace(/\s+/g, ' '))
+    expect(
+      roles.some(
+        (role) =>
+          role.includes(title) && role.includes(employer) && role.includes(dates)
+      )
+    ).toBe(true)
+  })
+
+  test('ends Experience with a full resume download', async () => {
+    let page = await get('/')
+    let link = page.html
+      .querySelectorAll('#experience a')
+      .find((a) => a.text.trim() === 'Full resume')
+    expect(link?.getAttribute('href')).toBe('/Myles-Pritchett-Resume.pdf')
+  })
+
+  test('does not mention the $50M figure', async () => {
+    let page = await get('/')
+    expect(page.body).not.toContain('$50')
+  })
+
+  test('orders sections Experience, Projects, Posts', async () => {
+    let page = await get('/')
+    let headings = page.html.querySelectorAll('h2').map((h2) => h2.text)
+    expect(headings).toEqual(['Experience', 'Projects', 'Posts'])
+  })
 })
