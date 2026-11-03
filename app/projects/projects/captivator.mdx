@@ -1,0 +1,27 @@
+---
+title: "Captivator"
+publishedAt: "2026-10-22"
+summary: "A WiFi splash page mock-up editor with a live mobile and desktop preview, built to a paid four-hour MVP brief."
+source: "https://github.com/MylesJPritchett/Captivator"
+link: "https://captivator.netlify.app"
+order: 1
+stack:
+  Frontend: [Next.js, React, TypeScript, Tailwind CSS]
+  Data: [IndexedDB (idb-keyval)]
+  Infra: [Netlify, GitHub Actions]
+  Testing: [Vitest, React Testing Library, Playwright]
+---
+
+Captivator is an editor for mocking up a branded WiFi splash page, the page a guest sees before connecting to a venue's WiFi. A customer edits the page on one side and sees it live in a mobile or desktop preview on the other. It was a paid brief: an MVP in Next.js with up to four hours of development time, intuitive enough for non-technical customers.
+
+The editor covers a logo, an image or colour background, text blocks, up to two input fields (name, email or phone, never two of the same), and the connect button's colours. Clicking an element in the preview jumps to its section in the editor. After the MVP I added a library of splash pages (create, open, rename, duplicate and delete), light and dark appearance, and reset to the starter page.
+
+The interesting part is the process. Before any code, I wrote a glossary of the domain terms and a set of architecture decision records. I then broke the brief into a spec and small vertical-slice tickets, each with acceptance criteria and the test seam to use. Agents implemented the tickets in parallel on their own branches, and I reviewed and merged each one into a feature branch before it reached `main`. The MVP was merged about an hour and a half after the first commit, and after that run I held a retro and changed the repo to make the next parallel run smoother.
+
+The decisions are recorded as ADRs and revisited when the requirements changed. It is client-only, with no backend, because a backend would add hours of work without serving the demo. All splash page state lives in one serialisable object changed only by a pure reducer, so domain rules such as the input field limits are enforced in one place and tested quickly. Splash pages were first saved to `localStorage`, then moved to IndexedDB once the library made the roughly 5MB `localStorage` limit a real problem, with a one-off migration for existing saves.
+
+It is built test-first at three agreed seams: the reducer with Vitest, the editor and preview together with React Testing Library, and the real browser with Playwright on desktop and mobile. It finished with 130 unit and component tests and 51 end-to-end tests, all run in CI on every push and pull request, and every pull request gets a Netlify deploy preview.
+
+[Try Captivator](https://captivator.netlify.app)
+
+[Source code on GitHub](https://github.com/MylesJPritchett/Captivator)
