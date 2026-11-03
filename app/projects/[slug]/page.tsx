@@ -3,7 +3,7 @@ import { CustomMDX } from 'app/components/mdx'
 import { InProgress } from 'app/components/in-progress'
 import { StackDiagram } from 'app/components/stack-diagram'
 import { formatDate, getProject, getProjects } from 'app/content'
-import { baseUrl } from 'app/sitemap'
+import { authorPerson, baseUrl, imageUrl } from 'app/site'
 
 export async function generateStaticParams() {
   let projects = getProjects()
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps<'/projects/[slug]'>
     summary: description,
     image,
   } = project
-  let ogImage = image ? image : `${baseUrl}/og?title=${encodeURIComponent(title)}`
+  let ogImage = imageUrl(title, image)
 
   return {
     title,
@@ -68,19 +68,16 @@ export default async function ProjectPage({ params }: PageProps<'/projects/[slug
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'PortfolioProject',
+            '@type': 'SoftwareSourceCode',
+            name: project.title,
             headline: project.title,
             datePublished: project.publishedAt,
             dateModified: project.publishedAt,
             description: project.summary,
-            image: project.image
-              ? `${baseUrl}${project.image}`
-              : `/og?title=${encodeURIComponent(project.title)}`,
+            image: imageUrl(project.title, project.image),
             url: `${baseUrl}/projects/${project.slug}`,
-            author: {
-              '@type': 'Person',
-              name: "Myles' Portfolio",
-            },
+            codeRepository: project.source,
+            author: authorPerson,
           }),
         }}
       />

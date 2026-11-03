@@ -1,4 +1,4 @@
-import { PortfolioProjects } from 'app/components/projects'
+import { ProjectList } from 'app/components/projects'
 
 export const metadata = {
   title: 'Projects',
@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <section>
       <h1 className="font-semibold text-2xl mb-8 tracking-tighter">Projects</h1>
-      <PortfolioProjects />
+      <ProjectList />
     </section>
   )
 }
