@@ -1,5 +1,6 @@
 // Checks the site's real Projects and Posts, not fixtures: the content Myles
 // publishes has to load, and the Featured Projects have to be in the agreed order.
+import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, test } from 'vitest'
 import { getPosts, getProjects as getProjectsIn } from './content'
@@ -50,6 +51,13 @@ describe('the real content', () => {
     ...(project.link ? [[project.slug, 'link', project.link]] : []),
   ]))('%s has a well-formed https %s (%s)', (_slug, _field, url) => {
     expect(isHttpsUrl(url)).toBe(true)
+  })
+
+  test('every Project has a screenshot folder named after its slug', () => {
+    let missing = getProjects().filter(
+      (project) => !existsSync(join(__dirname, '..', 'public', 'projects', project.slug))
+    )
+    expect(missing.map((project) => project.slug)).toEqual([])
   })
 
   test('no Project points at the old recipease repo', () => {
