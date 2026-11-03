@@ -1,6 +1,7 @@
 import { getPosts, getProjects } from 'app/content'
+import { baseUrl } from 'app/site'
 
-export const baseUrl = 'https://mylesp.com'
+export { baseUrl }
 
 export default async function sitemap() {
   let today = new Date().toISOString().split('T')[0]
