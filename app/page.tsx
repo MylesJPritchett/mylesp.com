@@ -1,5 +1,5 @@
 import { BlogPosts } from 'app/components/posts'
-import { PortfolioProjects } from 'app/components/projects'
+import { ProjectList } from 'app/components/projects'
 
 const resumeHref = '/Myles-Pritchett-Resume.pdf'
 
@@ -120,7 +120,7 @@ export default function Page() {
       <Experience />
       <section className="my-8">
         <h2 className={sectionHeadingClass}>Projects</h2>
-        <PortfolioProjects />
+        <ProjectList />
       </section>
       <section className="my-8">
         <h2 className={sectionHeadingClass}>Posts</h2>

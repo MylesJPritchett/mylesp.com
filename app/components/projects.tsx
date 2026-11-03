@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { formatDate, getProjects } from 'app/content'
 
-export function PortfolioProjects() {
+export function ProjectList() {
   let allProjects = getProjects()
 
   return (
@@ -29,9 +29,10 @@ export function PortfolioProjects() {
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label={`Live site for ${project.title}`}
                       className="text-neutral-900 dark:text-neutral-100 tracking-tight mr-2"
                     >
-                      &#128279;
+                      <span aria-hidden="true">&#128279;</span>
                     </a>
                   )
                 }
@@ -39,9 +40,10 @@ export function PortfolioProjects() {
                   href={project.source}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Source code for ${project.title}`}
                   className="text-neutral-900 dark:text-neutral-100 tracking-tight"
                 >
-                  &lt;/&gt;
+                  <span aria-hidden="true">&lt;/&gt;</span>
                 </a>
               </div>
             </div>
