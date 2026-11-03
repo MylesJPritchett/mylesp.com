@@ -169,6 +169,89 @@ source: "https://github.com/MylesJPritchett/example"
   })
 })
 
+describe('Stack', () => {
+  let projectWithStack = (stack: string) => `---
+title: "Captivator"
+publishedAt: "2026-10-22"
+summary: "A Splash Page editor"
+source: "https://github.com/MylesJPritchett/Captivator"
+${stack}
+---
+`
+
+  test('the Stack comes back in Layer order, whatever order the frontmatter uses', () => {
+    let dir = contentDir({
+      'captivator.mdx': projectWithStack(`stack:
+  Testing: [Vitest, Playwright]
+  Infra: [Netlify]
+  Frontend: [Next.js, React]
+  Data: [IndexedDB]
+  AI: [Claude API]
+  Backend: [Next.js Server Actions]`),
+    })
+
+    expect(getProject('captivator', { dir })?.stack).toEqual([
+      { layer: 'Frontend', technologies: ['Next.js', 'React'] },
+      { layer: 'Backend', technologies: ['Next.js Server Actions'] },
+      { layer: 'Data', technologies: ['IndexedDB'] },
+      { layer: 'AI', technologies: ['Claude API'] },
+      { layer: 'Infra', technologies: ['Netlify'] },
+      { layer: 'Testing', technologies: ['Vitest', 'Playwright'] },
+    ])
+  })
+
+  test('a Project without a Stack has no stack field', () => {
+    let dir = contentDir({ 'captivator.mdx': projectWithStack('') })
+
+    expect(getProject('captivator', { dir })).not.toHaveProperty('stack')
+  })
+
+  test('empty and absent Layers are left out', () => {
+    let dir = contentDir({
+      'captivator.mdx': projectWithStack(`stack:
+  Frontend: [Next.js]
+  Backend: []
+  Data:
+  Testing: [Vitest]`),
+    })
+
+    expect(getProject('captivator', { dir })?.stack).toEqual([
+      { layer: 'Frontend', technologies: ['Next.js'] },
+      { layer: 'Testing', technologies: ['Vitest'] },
+    ])
+  })
+
+  test('an unknown Layer fails, naming the file and the Layer', () => {
+    let dir = contentDir({
+      'captivator.mdx': projectWithStack('stack:\n  Frontend: [Next.js]\n  Mobile: [Swift]'),
+    })
+
+    expect(() => getProjects({ dir })).toThrow(/captivator\.mdx.*"Mobile"/)
+  })
+
+  test.each([
+    ['a string', 'Frontend: Next.js'],
+    ['a list with a non-string', 'Frontend: [Next.js, [React]]'],
+    ['a map', 'Frontend: { framework: Next.js }'],
+  ])('a Layer whose value is %s fails, naming the file and the Layer', (_, layer) => {
+    let dir = contentDir({ 'captivator.mdx': projectWithStack(`stack:\n  ${layer}`) })
+
+    expect(() => getProjects({ dir })).toThrow(/captivator\.mdx.*"Frontend"/)
+  })
+
+  test('a stack that is not a map of Layers fails, naming the file', () => {
+    let dir = contentDir({ 'captivator.mdx': projectWithStack('stack: [Next.js, React]') })
+
+    expect(() => getProjects({ dir })).toThrow(/captivator\.mdx.*stack/)
+  })
+
+  test('a Stack whose Layers are all empty counts as no Stack', () => {
+    let dir = contentDir({ 'captivator.mdx': projectWithStack('stack:\n  Frontend: []') })
+
+    expect(getProject('captivator', { dir })).not.toHaveProperty('stack')
+  })
+})
+
 function post(title: string, publishedAt: string) {
   return `---
 title: "${title}"

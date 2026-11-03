@@ -5,6 +5,14 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { parse } from 'yaml'
 
+/** The fixed set of Layers, in the order a Stack is shown. */
+export const LAYERS = ['Frontend', 'Backend', 'Data', 'AI', 'Infra', 'Testing'] as const
+
+export type Layer = (typeof LAYERS)[number]
+
+/** A Project's Stack: the Layers it uses, in Layer order, each with its technologies. */
+export type Stack = { layer: Layer; technologies: string[] }[]
+
 export type Project = {
   slug: string
   title: string
@@ -13,6 +21,7 @@ export type Project = {
   source: string
   link?: string
   image?: string
+  stack?: Stack
   content: string
 }
 
@@ -37,6 +46,7 @@ type Frontmatter = {
   required(key: string): string
   date(key: string): string
   optional<K extends string>(key: K): { [P in K]?: string }
+  stack(): { stack?: Stack }
 }
 
 type MDXFile = {
@@ -75,6 +85,28 @@ function readFrontmatter(file: string, data: Record<string, unknown>): Frontmatt
     optional(key) {
       let value = present(key)
       return (value === undefined ? {} : { [key]: value }) as { [P in typeof key]?: string }
+    },
+    stack() {
+      let value = data.stack
+      if (value === undefined || value === null) return {}
+      if (typeof value !== 'object' || Array.isArray(value)) {
+        return fail(`"stack" must map each Layer to a list of technologies`)
+      }
+      let layers = value as Record<string, unknown>
+      for (let [layer, technologies] of Object.entries(layers)) {
+        if (!(LAYERS as readonly string[]).includes(layer)) {
+          fail(`unknown Layer "${layer}" in "stack"; use ${LAYERS.join(', ')}`)
+        }
+        let isList =
+          technologies === null ||
+          (Array.isArray(technologies) && technologies.every((t) => typeof t === 'string'))
+        if (!isList) fail(`Layer "${layer}" in "stack" must be a list of technology names`)
+      }
+      let stack = LAYERS.flatMap((layer) => {
+        let technologies = layers[layer] as string[] | null | undefined
+        return technologies?.length ? [{ layer, technologies }] : []
+      })
+      return stack.length ? { stack } : {}
     },
   }
 }
@@ -134,6 +166,7 @@ export function getProjects({ dir = PROJECTS_DIR }: ContentOptions = {}): Projec
       source: frontmatter.required('source'),
       ...frontmatter.optional('link'),
       ...frontmatter.optional('image'),
+      ...frontmatter.stack(),
       content,
     }))
     .sort(projectOrder)
