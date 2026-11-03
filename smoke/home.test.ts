@@ -63,3 +63,18 @@ describe('home page', () => {
     expect(headings).toEqual(['Experience', 'Projects', 'Posts'])
   })
 })
+
+describe('footer', () => {
+  test('leads with LinkedIn and email, keeping RSS and view source', async () => {
+    let page = await get('/')
+    let links = page.html
+      .querySelectorAll('footer a')
+      .map((a) => a.getAttribute('href'))
+    expect(links.slice(0, 2)).toEqual([
+      'https://www.linkedin.com/in/myles-pritchett/',
+      'mailto:mylesjpritchett@gmail.com',
+    ])
+    expect(links).toContain('/rss')
+    expect(links).toContain('https://github.com/MylesJPritchett/mylesp.com')
+  })
+})
