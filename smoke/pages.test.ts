@@ -16,7 +16,7 @@ describe('pages', () => {
   test('the home page returns 200', async () => {
     let page = await get('/')
     expect(page.status).toBe(200)
-    expect(page.html.querySelector('h1')?.text).toBe("Myles Pritchett's Portfolio")
+    expect(page.html.querySelector('h1')?.text).toBe('Myles Pritchett')
   })
 
   test('the Projects list returns 200', async () => {
