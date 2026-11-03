@@ -1,8 +1,9 @@
 ---
 title: "Ingreedients"
 publishedAt: "2024-09-28"
-summary: "This web app loads in a CSV, stores in a SQLite DB recipes and ingredients. On the home page you can select the ingredients you have, or the recipes you want to make, and it tells you what ingredients you need, or what recipes you can make"
+summary: "A web app that loads recipes and ingredients from a CSV and tells you what you can make with the ingredients you have, or what you need for the recipes you want."
 source: "https://github.com/MylesJPritchett/ingreedients"
+order: 3
 stack:
   Frontend: [Next.js, React, TypeScript, Tailwind CSS]
   Backend: [Next.js API routes]
@@ -11,13 +12,13 @@ stack:
 link: "https://ingreedients.netlify.app"
 ---
 
-This is a next.js app, written in typescript. It was made for a friend of mine who owns a bar ([Tipsy Turtle](https://tipsyturtle.com.au/)). He wanted to quickly see what cocktails he could make with the ingredients he had on hand.
+Ingreedients tells you what you can make with the ingredients you have. I made it for a friend of mine who owns a bar ([Tipsy Turtle](https://tipsyturtle.com.au/)). He wanted to quickly see which cocktails he could make with the ingredients he had on hand. It is a Next.js app written in TypeScript, and I built it in two days.
 
-You can search for both ingredients and recipes from the file you upload. You can then filter both ingredients by clicking on one or many target recipes, to only show the ingredients that are neccesary to make them.
+You upload a CSV of recipes and their ingredients, which is parsed by an API route and stored in SQLite through Prisma, with a join table holding each ingredient's amount in a recipe. You can then search both ingredients and recipes, and select one or many target recipes to show only the ingredients that are necessary to make them.
 
-The recipes are sorted by the amount of additional ingredients selected from the list.
+The recipes are sorted by how many more ingredients each one needs from what you have selected, so the ones you can make right now come first.
 
-The ingredients are sorted by their "impact", i.e. how many recipes they would complete if selected, and then how many recipes they would make closer to completion.
+The ingredients are sorted by their "impact", i.e. how many recipes they would complete if selected, and then how many recipes they would bring closer to completion.
 
 [View the site](https://ingreedients.netlify.app)
 

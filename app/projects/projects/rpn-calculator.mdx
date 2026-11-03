@@ -3,6 +3,7 @@ title: "RPN Calculator Console App"
 publishedAt: "2024-11-12"
 summary: "A TUI Calculator using Reverse Polish Notation, written in Rust. It is great for quick to medium complexity calculations."
 source: "https://github.com/MylesJPritchett/rpn-calc"
+order: 7
 stack:
   Frontend: [Rust, Ratatui, Crossterm]
   Testing: [cargo test]
@@ -16,6 +17,8 @@ RPN calculators differ from the traditional calculators by the fact that you ent
 
 There are also extra features to swap numbers, duplicate numbers, clear and delete.
 
-There is working undo and redo stacks, so you can go back to previous states if you make a mistake.
+There are working undo and redo stacks, so you can go back to previous states if you make a mistake. The stack is saved between runs, and an in-app guide lists the operations by category.
+
+It has 67 unit tests, covering the operations as well as very large and very small numbers.
 
 [Source code on GitHub](https://github.com/MylesJPritchett/rpn-calc)
