@@ -1,0 +1,29 @@
+---
+title: "Flowroll"
+publishedAt: "2026-05-29"
+summary: "A knowledge graph for Brazilian Jiu Jitsu that models positions, reactions and techniques as a connected web of decisions."
+source: "https://github.com/MylesJPritchett/flowroll"
+order: 2
+stack:
+  Frontend: [Next.js, React, React Flow, TypeScript, Tailwind CSS]
+  Backend: [Next.js Server Actions, NextAuth]
+  Data: [Supabase (Postgres)]
+  AI: [Claude SDK]
+  Testing: [Vitest]
+---
+
+Flowroll is a visual knowledge system for Brazilian Jiu Jitsu. BJJ is not a linear system, it is a network of decisions, so Flowroll models positions, reactions and techniques as a connected graph you can pan, zoom and edit. The goal is that if I understand one position, I can navigate the whole web of responses from it. It grew out of the same interest as my Post on [how Jiu Jitsu is like software development](/blog/how-jiu-jitsu-is-like-software-development).
+
+{/* Screenshots: drop images into public/projects/flowroll/ and show them here, e.g.
+<Image src="/projects/flowroll/graph.png" alt="The Flowroll graph editor" width={1280} height={800} />
+*/}
+
+The domain model is the most interesting part. It started as free-form nodes and edges and became a model of states, conditions and actions. Each action has prerequisites (what must or must not be true) and effects that add or remove conditions, split between the person doing the move and their opponent. That lets the graph suggest which states can follow from a move, rather than relying on me to draw every edge by hand.
+
+Notes can be imported with AI. I paste free-text notes or a YouTube URL, and the Claude API turns them into a structured notation of positions, conditions, actions and flows. The prompt is grounded in the existing taxonomy so names are reused rather than duplicated, and for a video the transcript is fetched so each technique links to a timestamped clip. The notation is then parsed by a plain, unit-tested parser before anything is saved.
+
+It is a full-stack Next.js app. Server Actions handle the graph, taxonomy and imports, NextAuth with GitHub sign-in gates every page, and the data lives in Supabase Postgres with the schema evolved through migrations. There is also an admin role, multiple graphs that can be merged into the main one, embedded images and videos, and drag-to-select with copy, cut and delete.
+
+The core logic has Vitest unit tests, and a separate integration suite runs the Server Actions against a local Supabase instance with authentication stubbed.
+
+[Source code on GitHub](https://github.com/MylesJPritchett/flowroll)

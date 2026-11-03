@@ -1,3 +1,5 @@
+import { email, externalLinkProps, github, linkedin } from 'app/links'
+
 function ArrowIcon() {
   return (
     <svg
@@ -15,46 +17,42 @@ function ArrowIcon() {
   )
 }
 
+const mainLinks = [linkedin, email, github]
+
+const minorLinks = [
+  { label: 'rss', href: '/rss' },
+  { label: 'view source', href: 'https://github.com/MylesJPritchett/mylesp.com' },
+]
+
 export default function Footer() {
   return (
     <footer className="mb-16">
       <ul className="font-sm mt-8 flex flex-col space-x-0 space-y-5 text-neutral-600 md:flex-row md:space-x-4 md:space-y-0 dark:text-neutral-300">
-        <li>
-          <a
-            className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="/rss"
-          >
-            <ArrowIcon />
-            <p className="ml-2 h-7">rss</p>
-          </a>
-        </li>
-        <li>
-          <a
-            className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://github.com/MylesJPritchett/"
-          >
-            <ArrowIcon />
-            <p className="ml-2 h-7">github</p>
-          </a>
-        </li>
-        <li>
-          <a
-            className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://github.com/MylesJPritchett/mylesp.com"
-          >
-            <ArrowIcon />
-            <p className="ml-2 h-7">view source</p>
-          </a>
-        </li>
+        {mainLinks.map(({ label, href }) => (
+          <li key={href}>
+            <a
+              className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+              href={href}
+              {...externalLinkProps(href)}
+            >
+              <ArrowIcon />
+              <p className="ml-2 h-7">{label}</p>
+            </a>
+          </li>
+        ))}
       </ul>
-      <p className="mt-8 text-neutral-600 dark:text-neutral-300">
-        © {new Date().getFullYear()} MIT Licensed
+      <p className="mt-8 flex flex-wrap gap-x-3 text-sm text-neutral-500 dark:text-neutral-400">
+        <span>© {new Date().getFullYear()} MIT Licensed</span>
+        {minorLinks.map(({ label, href }) => (
+          <a
+            key={href}
+            className="transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+            href={href}
+            {...externalLinkProps(href)}
+          >
+            {label}
+          </a>
+        ))}
       </p>
     </footer>
   )

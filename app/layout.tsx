@@ -6,22 +6,29 @@ import { Navbar } from './components/nav'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import Footer from './components/footer'
-import { baseUrl } from './sitemap'
+import { baseUrl, siteDescription, siteTitle } from './site'
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Myles' Portfolio",
-    template: "%s | Myles' Portfolio",
+    default: siteTitle,
+    template: `%s | ${siteTitle}`,
   },
-  description: 'This is my portfolio.',
+  description: siteDescription,
   openGraph: {
-    title: "Myles' Portfolio",
-    description: 'This is my portfolio and personal blog.',
+    title: siteTitle,
+    description: siteDescription,
     url: baseUrl,
-    siteName: "Myles' Portfolio",
+    siteName: siteTitle,
     locale: 'en_AU',
     type: 'website',
+    images: [{ url: '/og', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteTitle,
+    description: siteDescription,
+    images: ['/og'],
   },
   robots: {
     index: true,

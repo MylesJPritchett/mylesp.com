@@ -1,0 +1,24 @@
+---
+title: "Type Duel"
+publishedAt: "2026-10-18"
+summary: "A real-time, two-player typing duel played over WebSockets, with an authoritative game server written in Rust."
+source: "https://github.com/MylesJPritchett/type-duel"
+order: 4
+status: in-progress
+stack:
+  Frontend: [HTML, JavaScript]
+  Backend: [Rust, Axum, Tokio, WebSockets]
+  Testing: [cargo test, tokio-tungstenite]
+---
+
+Type Duel is a real-time typing game for two players. You attack by typing words from memory, and every valid word lands in your opponent's queue. To defend, you type through the words in your own queue. If your queue reaches ten words, you lose, so it plays a bit like Tetris.
+
+One player creates a room and shares its four-character code. Once both players are ready there is a 3-2-1 countdown, then the game runs until someone's queue overflows. The game over screen shows words sent and completed, the longest word and average WPM, and both players can agree to a rematch. If a player disconnects for more than five seconds, the other player wins.
+
+The server is authoritative and built with Axum and Tokio. Each room tracks its state from waiting for players through ready-up, countdown, playing and game over. Each player's socket runs its own `tokio::select!` loop with a channel for messages from the room, and the countdown and disconnect timeouts run as spawned tasks. The server validates every word (length, characters, the dictionary and no immediate repeats) before it reaches the opponent. The dictionary is embedded in the binary at compile time and loaded into a hash set on first use. The frontend is plain HTML and JavaScript served by the same binary, with no build step.
+
+The WebSocket protocol is the main test seam. 29 integration tests start a real server and drive two WebSocket clients through whole games: joining, a full room, ready-up and countdown, valid and rejected words, attacking and defending, overflow, game over stats, rematches and disconnects. Another 49 unit tests cover the game rules and the dictionary.
+
+It is In Progress. It is playable locally, but it isn't deployed yet, finished rooms are not yet cleaned up, and the word list needs curating so defenders don't get blindsided by obscure words.
+
+[Source code on GitHub](https://github.com/MylesJPritchett/type-duel)
