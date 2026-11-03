@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { formatDate, getProjects } from 'app/content'
+import { InProgress } from 'app/components/in-progress'
 
 export function PortfolioProjects() {
   let allProjects = getProjects()
@@ -21,6 +22,7 @@ export function PortfolioProjects() {
                 className="text-neutral-900 dark:text-neutral-100 tracking-tight flex-1"
               >
                 {project.title}
+                {project.inProgress && <InProgress />}
               </Link>
               <div className="flex space-x-2">
                 {project.link &&

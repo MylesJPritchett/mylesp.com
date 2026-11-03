@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { CustomMDX } from 'app/components/mdx'
+import { InProgress } from 'app/components/in-progress'
 import { formatDate, getProject, getProjects } from 'app/content'
 import { baseUrl } from 'app/sitemap'
 
@@ -84,6 +85,7 @@ export default async function Portfolio({ params }: PageProps<'/portfolio/[slug]
       />
       <h1 className="title font-semibold text-2xl tracking-tighter">
         {project.title}
+        {project.inProgress && <InProgress />}
       </h1>
       <div className="flex justify-between items-center mt-2 mb-8 text-sm">
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
