@@ -23,11 +23,11 @@ describe('Stack', () => {
     ])
   })
 
-  test('the Projects list shows a Project\'s technologies as tags, in Layer order', async () => {
+  test('the Projects list shows a Project\'s Stack as a flat list, in Layer order', async () => {
     let page = await get('/projects')
-    let tags = page.html.querySelector('ul[aria-label="Battlesnake AI Stack"]')
+    let list = page.html.querySelector('ul[aria-label="Battlesnake AI Stack"]')
 
-    expect(tags?.querySelectorAll('li').map((li) => li.text.trim())).toEqual([
+    expect(list?.querySelectorAll('li').map((li) => li.text.trim())).toEqual([
       'Rust',
       'Rocket',
       'Docker',

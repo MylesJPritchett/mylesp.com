@@ -1,7 +1,7 @@
 import type { Stack } from 'app/content'
 
-/** A Project's Stack as plain tags, in Layer order. */
-export function StackTags({ title, stack }: { title: string; stack?: Stack }) {
+/** A Project's Stack as a flat list of technologies, in Layer order. */
+export function StackList({ title, stack }: { title: string; stack?: Stack }) {
   if (!stack) return null
 
   return (
