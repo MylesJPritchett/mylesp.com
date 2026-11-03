@@ -199,6 +199,9 @@ importers:
       tailwindcss:
         specifier: 4.3.3
         version: 4.3.3
+      yaml:
+        specifier: 2.9.1
+        version: 2.9.1
     devDependencies:
       '@types/node':
         specifier: 24.19.2

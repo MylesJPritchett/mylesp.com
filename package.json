@@ -21,7 +21,8 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "sugar-high": "2.6.4",
-    "tailwindcss": "4.3.3"
+    "tailwindcss": "4.3.3",
+    "yaml": "2.9.1"
   },
   "devDependencies": {
     "@types/node": "24.19.2",
