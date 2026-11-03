@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: PageProps<'/blog/[slug]'>) {
   }
 }
 
-export default async function Blog({ params }: PageProps<'/blog/[slug]'>) {
+export default async function PostPage({ params }: PageProps<'/blog/[slug]'>) {
   let { slug } = await params
   let post = getPost(slug)
 

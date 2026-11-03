@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import { formatDate, getPosts } from 'app/content'
 
-export function BlogPosts() {
-  let allBlogs = getPosts()
+export function PostList() {
+  let posts = getPosts()
 
   return (
     <div>
-      {allBlogs.map((post) => (
+      {posts.map((post) => (
         <Link
           key={post.slug}
           className="flex flex-col space-y-1 mb-4"

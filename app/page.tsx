@@ -1,4 +1,4 @@
-import { BlogPosts } from 'app/components/posts'
+import { PostList } from 'app/components/posts'
 import { ProjectList } from 'app/components/projects'
 
 const resumeHref = '/Myles-Pritchett-Resume.pdf'
@@ -124,7 +124,7 @@ export default function Page() {
       </section>
       <section className="my-8">
         <h2 className={sectionHeadingClass}>Posts</h2>
-        <BlogPosts />
+        <PostList />
       </section>
     </section>
   )
