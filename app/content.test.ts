@@ -45,6 +45,7 @@ This is an AI for Battlesnake.
         source: 'https://github.com/MylesJPritchett/ferisss',
         link: 'https://play.battlesnake.com',
         image: '/battlesnake/board.png',
+        inProgress: false,
         content: 'This is an AI for Battlesnake.',
       },
     ])
@@ -149,6 +150,120 @@ source: "https://github.com/MylesJPritchett/example"
       'ingreedients',
       'battlesnake',
     ])
+  })
+
+  describe('Featured Project order', () => {
+    let project = (title: string, publishedAt: string, extra = '') => `---
+title: "${title}"
+publishedAt: "${publishedAt}"
+summary: "About ${title}"
+source: "https://github.com/MylesJPritchett/example"
+${extra}---
+`
+
+    test('Projects with an order come first, in ascending order', () => {
+      let dir = contentDir({
+        'battlesnake.mdx': project('Battlesnake', '2024-04-06', 'order: 2\n'),
+        'micro-arcade.mdx': project('Micro Arcade', '2025-12-01'),
+        'recipease.mdx': project('Recipease', '2023-03-01', 'order: 1\n'),
+        'rpn-calculator.mdx': project('RPN Calculator', '2024-11-12', 'order: 10\n'),
+      })
+
+      expect(getProjects({ dir }).map((p) => p.slug)).toEqual([
+        'recipease',
+        'battlesnake',
+        'rpn-calculator',
+        'micro-arcade',
+      ])
+    })
+
+    test('Projects without an order follow, newest first', () => {
+      let dir = contentDir({
+        'battlesnake.mdx': project('Battlesnake', '2024-04-06'),
+        'micro-arcade.mdx': project('Micro Arcade', '2025-12-01'),
+        'recipease.mdx': project('Recipease', '2023-03-01', 'order: 1\n'),
+        'ingreedients.mdx': project('Ingreedients', '2024-09-28'),
+      })
+
+      expect(getProjects({ dir }).map((p) => p.slug)).toEqual([
+        'recipease',
+        'micro-arcade',
+        'ingreedients',
+        'battlesnake',
+      ])
+    })
+
+    test('Projects with the same order, or unordered on the same day, break ties by slug', () => {
+      let dir = contentDir({
+        'recipease.mdx': project('Recipease', '2023-03-01', 'order: 1\n'),
+        'battlesnake.mdx': project('Battlesnake', '2025-04-06', 'order: 1\n'),
+        'ingreedients.mdx': project('Ingreedients', '2024-09-28'),
+        'dynamic-stone-solutions.mdx': project('Dynamic Stone Solutions', '2024-09-28'),
+      })
+
+      expect(getProjects({ dir }).map((p) => p.slug)).toEqual([
+        'battlesnake',
+        'recipease',
+        'dynamic-stone-solutions',
+        'ingreedients',
+      ])
+    })
+
+    test('adding an unordered Project does not change the order of Featured Projects', () => {
+      let featured = {
+        'battlesnake.mdx': project('Battlesnake', '2024-04-06', 'order: 2\n'),
+        'recipease.mdx': project('Recipease', '2023-03-01', 'order: 1\n'),
+      }
+      let before = getProjects({ dir: contentDir(featured) }).map((p) => p.slug)
+      let after = getProjects({
+        dir: contentDir({ ...featured, 'micro-arcade.mdx': project('Micro Arcade', '2026-10-01') }),
+      }).map((p) => p.slug)
+
+      expect(before).toEqual(['recipease', 'battlesnake'])
+      expect(after).toEqual(['recipease', 'battlesnake', 'micro-arcade'])
+    })
+
+    test.each(['1.5', '"1"', 'first', '[1]'])(
+      'a Project with the order %s fails, naming the file',
+      (order) => {
+        let dir = contentDir({
+          'battlesnake.mdx': project('Battlesnake', '2024-04-06', `order: ${order}\n`),
+        })
+
+        expect(() => getProjects({ dir })).toThrow(/battlesnake\.mdx.*order/)
+      }
+    )
+  })
+
+  describe('In Progress', () => {
+    let project = (status?: string) => `---
+title: "Flowroll"
+publishedAt: "2026-01-01"
+summary: "A jiu jitsu flow tracker"
+source: "https://github.com/MylesJPritchett/flowroll"
+${status === undefined ? '' : `status: ${status}\n`}---
+`
+
+    test('a Project with status in-progress is In Progress', () => {
+      let dir = contentDir({ 'flowroll.mdx': project('in-progress') })
+
+      expect(getProjects({ dir })[0].inProgress).toBe(true)
+    })
+
+    test('a Project without a status is not In Progress', () => {
+      let dir = contentDir({ 'flowroll.mdx': project() })
+
+      expect(getProjects({ dir })[0].inProgress).toBe(false)
+    })
+
+    test.each(['done', 'In Progress', 'wip', 'true'])(
+      'a Project with the status %s fails, naming the file',
+      (status) => {
+        let dir = contentDir({ 'flowroll.mdx': project(status) })
+
+        expect(() => getProjects({ dir })).toThrow(/flowroll\.mdx.*status/)
+      }
+    )
   })
 
   test('a Project is found by its slug, and an unknown slug finds nothing', () => {

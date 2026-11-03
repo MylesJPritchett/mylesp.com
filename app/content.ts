@@ -13,6 +13,10 @@ export type Project = {
   source: string
   link?: string
   image?: string
+  /** Featured Project rank: lower comes first. Unranked Projects follow. */
+  order?: number
+  /** Still being actively built. Set with `status: in-progress`. */
+  inProgress: boolean
   content: string
 }
 
@@ -37,6 +41,8 @@ type Frontmatter = {
   required(key: string): string
   date(key: string): string
   optional<K extends string>(key: K): { [P in K]?: string }
+  optionalInteger<K extends string>(key: K): { [P in K]?: number }
+  oneOf<V extends string>(key: string, allowed: readonly V[]): V | undefined
 }
 
 type MDXFile = {
@@ -75,6 +81,20 @@ function readFrontmatter(file: string, data: Record<string, unknown>): Frontmatt
     optional(key) {
       let value = present(key)
       return (value === undefined ? {} : { [key]: value }) as { [P in typeof key]?: string }
+    },
+    optionalInteger(key) {
+      let value = data[key]
+      if (value === undefined || value === null) return {} as { [P in typeof key]?: number }
+      if (typeof value !== 'number' || !Number.isInteger(value)) {
+        fail(`"${key}" must be a whole number, got "${String(value)}"`)
+      }
+      return { [key]: value } as { [P in typeof key]?: number }
+    },
+    oneOf(key, allowed) {
+      let value = present(key)
+      if (value === undefined) return undefined
+      return allowed.find((option) => option === value) ??
+        fail(`"${key}" must be one of ${allowed.map((option) => `"${option}"`).join(', ')}, got "${value}"`)
     },
   }
 }
@@ -119,8 +139,16 @@ function newestFirst(a: Dated, b: Dated) {
   return b.publishedAt.localeCompare(a.publishedAt) || a.slug.localeCompare(b.slug)
 }
 
-/** The order Projects are shown in. */
+/**
+ * The order Projects are shown in: Featured Projects by ascending order, then
+ * the rest newest first. Ties break by slug.
+ */
 function projectOrder(a: Project, b: Project) {
+  if (a.order !== undefined && b.order !== undefined) {
+    return a.order - b.order || a.slug.localeCompare(b.slug)
+  }
+  if (a.order !== undefined) return -1
+  if (b.order !== undefined) return 1
   return newestFirst(a, b)
 }
 
@@ -134,6 +162,8 @@ export function getProjects({ dir = PROJECTS_DIR }: ContentOptions = {}): Projec
       source: frontmatter.required('source'),
       ...frontmatter.optional('link'),
       ...frontmatter.optional('image'),
+      ...frontmatter.optionalInteger('order'),
+      inProgress: frontmatter.oneOf('status', ['in-progress']) === 'in-progress',
       content,
     }))
     .sort(projectOrder)
