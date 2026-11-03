@@ -12,7 +12,7 @@ export async function generateStaticParams() {
   }))
 }
 
-export async function generateMetadata({ params }: PageProps<'/portfolio/[slug]'>) {
+export async function generateMetadata({ params }: PageProps<'/projects/[slug]'>) {
   let { slug } = await params
   let project = getProject(slug)
   if (!project) {
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps<'/portfolio/[slug]'
       description,
       type: 'article',
       publishedTime,
-      url: `${baseUrl}/portfolio/${project.slug}`,
+      url: `${baseUrl}/projects/${project.slug}`,
       images: [
         {
           url: ogImage,
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: PageProps<'/portfolio/[slug]'
   }
 }
 
-export default async function Portfolio({ params }: PageProps<'/portfolio/[slug]'>) {
+export default async function ProjectPage({ params }: PageProps<'/projects/[slug]'>) {
   let { slug } = await params
   let project = getProject(slug)
 
@@ -75,7 +75,7 @@ export default async function Portfolio({ params }: PageProps<'/portfolio/[slug]
             image: project.image
               ? `${baseUrl}${project.image}`
               : `/og?title=${encodeURIComponent(project.title)}`,
-            url: `${baseUrl}/portfolio/${project.slug}`,
+            url: `${baseUrl}/projects/${project.slug}`,
             author: {
               '@type': 'Person',
               name: "Myles' Portfolio",

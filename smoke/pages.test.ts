@@ -9,7 +9,7 @@ function slugsIn(dir: string) {
     .map((file) => basename(file, '.mdx'))
 }
 
-const projectSlugs = slugsIn('app/portfolio/projects')
+const projectSlugs = slugsIn('app/projects/projects')
 const postSlugs = slugsIn('app/blog/posts')
 
 describe('pages', () => {
@@ -20,19 +20,21 @@ describe('pages', () => {
   })
 
   test('the Projects list returns 200', async () => {
-    let page = await get('/portfolio')
+    let page = await get('/projects')
     expect(page.status).toBe(200)
-    expect(page.html.querySelector('h1')?.text).toBe('My Projects')
+    expect(page.html.querySelector('h1')?.text).toBe('Projects')
+    expect(page.html.querySelector('title')?.text).toBe("Projects | Myles' Portfolio")
   })
 
-  test('the blog list returns 200', async () => {
+  test('the Posts list returns 200', async () => {
     let page = await get('/blog')
     expect(page.status).toBe(200)
-    expect(page.html.querySelector('h1')?.text).toBe('My Blog')
+    expect(page.html.querySelector('h1')?.text).toBe('Posts')
+    expect(page.html.querySelector('title')?.text).toBe("Posts | Myles' Portfolio")
   })
 
   test.each(projectSlugs)('the Project page %s returns 200', async (slug) => {
-    let page = await get(`/portfolio/${slug}`)
+    let page = await get(`/projects/${slug}`)
     expect(page.status).toBe(200)
     expect(page.html.querySelector('article.prose')).not.toBeNull()
   })

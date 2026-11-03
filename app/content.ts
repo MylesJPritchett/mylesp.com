@@ -39,7 +39,7 @@ export type ContentOptions = {
   dir?: string
 }
 
-const PROJECTS_DIR = path.join(process.cwd(), 'app', 'portfolio', 'projects')
+const PROJECTS_DIR = path.join(process.cwd(), 'app', 'projects', 'projects')
 const POSTS_DIR = path.join(process.cwd(), 'app', 'blog', 'posts')
 
 type Frontmatter = {
