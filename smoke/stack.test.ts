@@ -14,7 +14,7 @@ const projects = getProjects()
 
 describe('Stack', () => {
   test('a Project page shows one diagram row per Layer used, in Layer order', async () => {
-    let page = await get('/portfolio/battlesnake')
+    let page = await get('/projects/battlesnake')
 
     expect(diagramRows(page)).toEqual([
       { layer: 'Backend', technologies: ['Rust', 'Rocket'] },
@@ -23,7 +23,7 @@ describe('Stack', () => {
   })
 
   test('the Projects list shows a Project\'s technologies as tags, in Layer order', async () => {
-    let page = await get('/portfolio')
+    let page = await get('/projects')
     let tags = page.html.querySelector('ul[aria-label="Battlesnake AI Stack"]')
 
     expect(tags?.querySelectorAll('li').map((li) => li.text.trim())).toEqual([
@@ -38,7 +38,7 @@ describe('Stack', () => {
   test.each(projects.map((project) => [project.slug, project] as const))(
     'the Project page %s shows a diagram only if the Project has a Stack',
     async (slug, project) => {
-      let page = await get(`/portfolio/${slug}`)
+      let page = await get(`/projects/${slug}`)
 
       expect(diagramRows(page)).toEqual(project.stack)
     }
