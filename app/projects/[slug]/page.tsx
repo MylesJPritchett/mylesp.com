@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation'
 import { CustomMDX } from 'app/components/mdx'
+import { InProgress } from 'app/components/in-progress'
+import { StackDiagram } from 'app/components/stack-diagram'
 import { formatDate, getProject, getProjects } from 'app/content'
 import { authorPerson, baseUrl, imageUrl } from 'app/site'
 
@@ -81,12 +83,14 @@ export default async function ProjectPage({ params }: PageProps<'/projects/[slug
       />
       <h1 className="title font-semibold text-2xl tracking-tighter">
         {project.title}
+        {project.inProgress && <InProgress />}
       </h1>
       <div className="flex justify-between items-center mt-2 mb-8 text-sm">
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
           {formatDate(project.publishedAt)}
         </p>
       </div>
+      <StackDiagram stack={project.stack} />
       <article className="prose">
         <CustomMDX source={project.content} />
       </article>

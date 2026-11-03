@@ -5,6 +5,14 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { parse } from 'yaml'
 
+/** The fixed set of Layers, in the order a Stack is shown. */
+export const LAYERS = ['Frontend', 'Backend', 'Data', 'AI', 'Infra', 'Testing'] as const
+
+export type Layer = (typeof LAYERS)[number]
+
+/** A Project's Stack: the Layers it uses, in Layer order, each with its technologies. */
+export type Stack = { layer: Layer; technologies: string[] }[]
+
 export type Project = {
   slug: string
   title: string
@@ -13,6 +21,11 @@ export type Project = {
   source: string
   link?: string
   image?: string
+  /** Featured Project rank: lower comes first. Unranked Projects follow. */
+  order?: number
+  /** Still being actively built. Set with `status: in-progress`. */
+  inProgress: boolean
+  stack?: Stack
   content: string
 }
 
@@ -26,7 +39,10 @@ export type Post = {
 }
 
 export type ContentOptions = {
-  /** Directory of MDX files to read. Defaults to the site's real content. */
+  /**
+   * Directory of MDX files to read. Defaults to the site's real content, or
+   * for Projects to PROJECTS_DIR when set (the smoke tests build with it).
+   */
   dir?: string
 }
 
@@ -37,6 +53,9 @@ type Frontmatter = {
   required(key: string): string
   date(key: string): string
   optional<K extends string>(key: K): { [P in K]?: string }
+  optionalInteger<K extends string>(key: K): { [P in K]?: number }
+  oneOf<V extends string>(key: string, allowed: readonly V[]): V | undefined
+  stack(): { stack?: Stack }
 }
 
 type MDXFile = {
@@ -75,6 +94,42 @@ function readFrontmatter(file: string, data: Record<string, unknown>): Frontmatt
     optional(key) {
       let value = present(key)
       return (value === undefined ? {} : { [key]: value }) as { [P in typeof key]?: string }
+    },
+    optionalInteger(key) {
+      let value = data[key]
+      if (value === undefined || value === null) return {} as { [P in typeof key]?: number }
+      if (typeof value !== 'number' || !Number.isInteger(value)) {
+        fail(`"${key}" must be a whole number, got "${String(value)}"`)
+      }
+      return { [key]: value } as { [P in typeof key]?: number }
+    },
+    oneOf(key, allowed) {
+      let value = present(key)
+      if (value === undefined) return undefined
+      return allowed.find((option) => option === value) ??
+        fail(`"${key}" must be one of ${allowed.map((option) => `"${option}"`).join(', ')}, got "${value}"`)
+    },
+    stack() {
+      let value = data.stack
+      if (value === undefined || value === null) return {}
+      if (typeof value !== 'object' || Array.isArray(value)) {
+        return fail(`"stack" must map each Layer to a list of technologies`)
+      }
+      let layers = value as Record<string, unknown>
+      for (let [layer, technologies] of Object.entries(layers)) {
+        if (!(LAYERS as readonly string[]).includes(layer)) {
+          fail(`unknown Layer "${layer}" in "stack"; use ${LAYERS.join(', ')}`)
+        }
+        let isList =
+          technologies === null ||
+          (Array.isArray(technologies) && technologies.every((t) => typeof t === 'string'))
+        if (!isList) fail(`Layer "${layer}" in "stack" must be a list of technology names`)
+      }
+      let stack = LAYERS.flatMap((layer) => {
+        let technologies = layers[layer] as string[] | null | undefined
+        return technologies?.length ? [{ layer, technologies }] : []
+      })
+      return stack.length ? { stack } : {}
     },
   }
 }
@@ -119,12 +174,22 @@ function newestFirst(a: Dated, b: Dated) {
   return b.publishedAt.localeCompare(a.publishedAt) || a.slug.localeCompare(b.slug)
 }
 
-/** The order Projects are shown in. */
+/**
+ * The order Projects are shown in: Featured Projects by ascending order, then
+ * the rest newest first. Ties break by slug.
+ */
 function projectOrder(a: Project, b: Project) {
+  if (a.order !== undefined && b.order !== undefined) {
+    return a.order - b.order || a.slug.localeCompare(b.slug)
+  }
+  if (a.order !== undefined) return -1
+  if (b.order !== undefined) return 1
   return newestFirst(a, b)
 }
 
-export function getProjects({ dir = PROJECTS_DIR }: ContentOptions = {}): Project[] {
+export function getProjects({
+  dir = process.env.PROJECTS_DIR || PROJECTS_DIR,
+}: ContentOptions = {}): Project[] {
   return readMDX(dir)
     .map(({ slug, frontmatter, content }) => ({
       slug,
@@ -134,6 +199,9 @@ export function getProjects({ dir = PROJECTS_DIR }: ContentOptions = {}): Projec
       source: frontmatter.required('source'),
       ...frontmatter.optional('link'),
       ...frontmatter.optional('image'),
+      ...frontmatter.optionalInteger('order'),
+      inProgress: frontmatter.oneOf('status', ['in-progress']) === 'in-progress',
+      ...frontmatter.stack(),
       content,
     }))
     .sort(projectOrder)

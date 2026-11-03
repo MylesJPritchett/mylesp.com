@@ -1,6 +1,6 @@
 import { readdirSync } from 'node:fs'
 import { basename } from 'node:path'
-import { describe, expect, test } from 'vitest'
+import { describe, expect, inject, test } from 'vitest'
 import { get } from './http'
 
 function slugsIn(dir: string) {
@@ -33,7 +33,8 @@ describe('sitemap', () => {
 
   test('lists every Project', async () => {
     let urls = await sitemapUrls()
-    for (let slug of slugsIn('app/projects/projects')) {
+    // The Projects the smoke build was made with, fixtures included.
+    for (let slug of slugsIn(inject('projectsDir'))) {
       expect(urls).toContain(`${site}/projects/${slug}`)
     }
   })

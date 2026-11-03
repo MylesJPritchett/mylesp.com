@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { formatDate, getProjects } from 'app/content'
+import { InProgress } from 'app/components/in-progress'
+import { StackTags } from 'app/components/stack-tags'
 
 export function ProjectList() {
   let allProjects = getProjects()
@@ -21,6 +23,7 @@ export function ProjectList() {
                 className="text-neutral-900 dark:text-neutral-100 tracking-tight flex-1"
               >
                 {project.title}
+                {project.inProgress && <InProgress />}
               </Link>
               <div className="flex space-x-2">
                 {project.link &&
@@ -47,6 +50,7 @@ export function ProjectList() {
                 </a>
               </div>
             </div>
+            <StackTags title={project.title} stack={project.stack} />
           </div>
         )
       })}

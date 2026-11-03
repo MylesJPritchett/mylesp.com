@@ -1,9 +1,10 @@
 import { readdirSync } from 'node:fs'
 import { basename } from 'node:path'
-import { describe, expect, test } from 'vitest'
+import { describe, expect, inject, test } from 'vitest'
 import { get } from './http'
 
-const projectSlugs = readdirSync('app/projects/projects')
+// The Projects the smoke build was made with, fixtures included.
+const projectSlugs = readdirSync(inject('projectsDir'))
   .filter((file) => file.endsWith('.mdx'))
   .map((file) => basename(file, '.mdx'))
 
