@@ -1,0 +1,25 @@
+---
+title: "Cravory"
+publishedAt: "2024-07-15"
+summary: "A data-based recipe app with fuzzy search and nutrition information drawn from a food composition dataset."
+source: "https://github.com/MylesJPritchett/cravory"
+order: 5
+stack:
+  Frontend: [Next.js, React, TypeScript, Tailwind CSS]
+  Backend: [Next.js API routes, NextAuth]
+  Data: [PostgreSQL (Neon), Drizzle ORM]
+  Infra: [Netlify]
+link: "https://cravory-app.netlify.app/"
+---
+
+Cravory is a recipe app built around real nutrition data. You can search foods and recipes, see the nutritional information for each, and create your own recipes from foods and other recipes. It is built with Next.js and hosted on Netlify.
+
+I started it to make weekly meal planning easier: deciding what to cook and what groceries to buy without buying ingredients for a recipe I never get around to making. My goals for it are to be data-based, simple, and automatic for the tedious parts.
+
+The data is imported from a food composition dataset (foods, nutrients, measures and retention factors) by a typed import script, into a normalised Postgres schema managed with Drizzle ORM and migrations. Recipe pages show macronutrients and can use other recipes as ingredients, and a food links to its matching recipe.
+
+Search is fuzzy, using PostgreSQL trigram similarity and ordered by the closest match, with a debounced live search in the UI. Sign-in is through GitHub or Google with NextAuth, stored through the Drizzle adapter. The database moved from SQLite to libSQL to Neon serverless Postgres as the deployment needs became clear.
+
+[View the site](https://cravory-app.netlify.app/)
+
+[Source code on GitHub](https://github.com/MylesJPritchett/cravory)
