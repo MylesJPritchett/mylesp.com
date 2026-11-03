@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { CustomMDX } from 'app/components/mdx'
+import { StackDiagram } from 'app/components/stack-diagram'
 import { formatDate, getProject, getProjects } from 'app/content'
 import { baseUrl } from 'app/sitemap'
 
@@ -90,6 +91,7 @@ export default async function Portfolio({ params }: PageProps<'/portfolio/[slug]
           {formatDate(project.publishedAt)}
         </p>
       </div>
+      <StackDiagram stack={project.stack} />
       <article className="prose">
         <CustomMDX source={project.content} />
       </article>
