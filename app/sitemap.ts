@@ -1,29 +1,23 @@
-import { getBlogPosts } from 'app/blog/utils'
-import { getPortfolioProjects } from './portfolio/utils'
-
-export const baseUrl = 'https://mylesp.com'
+import { getPosts, getProjects } from 'app/content'
+import { baseUrl } from 'app/site'
 
 export default async function sitemap() {
-  let blogs = getBlogPosts().map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: post.metadata.publishedAt,
-  }))
+  let today = new Date().toISOString().split('T')[0]
 
-  let projects = getPortfolioProjects().map((project) => ({
-    url: `${baseUrl}/portfolio/${project.slug}`,
-    lastModified: project.metadata.publishedAt,
-  }))
-
-
-  let routes = ['', '/blog'].map((route) => ({
+  let routes = ['', '/projects', '/blog'].map((route) => ({
     url: `${baseUrl}${route}`,
-    lastModified: new Date().toISOString().split('T')[0],
+    lastModified: today,
   }))
 
-  let projectRoutes = ['', '/portfolio'].map((projectRoute) => ({
-    url: `${baseUrl}${projectRoute}`,
-    lastModified: new Date().toISOString().split('T')[0],
+  let projects = getProjects().map((project) => ({
+    url: `${baseUrl}/projects/${project.slug}`,
+    lastModified: project.publishedAt,
   }))
 
-  return [...routes, ...blogs, ...projectRoutes, ...projects]
+  let posts = getPosts().map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: post.publishedAt,
+  }))
+
+  return [...routes, ...projects, ...posts]
 }

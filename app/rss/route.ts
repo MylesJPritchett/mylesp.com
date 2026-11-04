@@ -1,40 +1,8 @@
-import { baseUrl } from 'app/sitemap'
-import { getBlogPosts } from 'app/blog/utils'
+import { getPosts } from 'app/content'
+import { rssFeed } from './feed'
 
 export async function GET() {
-  let allBlogs = await getBlogPosts()
-
-  const itemsXml = allBlogs
-    .sort((a, b) => {
-      if (new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)) {
-        return -1
-      }
-      return 1
-    })
-    .map(
-      (post) =>
-        `<item>
-          <title>${post.metadata.title}</title>
-          <link>${baseUrl}/blog/${post.slug}</link>
-          <description>${post.metadata.summary || ''}</description>
-          <pubDate>${new Date(
-          post.metadata.publishedAt
-        ).toUTCString()}</pubDate>
-        </item>`
-    )
-    .join('\n')
-
-  const rssFeed = `<?xml version="1.0" encoding="UTF-8" ?>
-  <rss version="2.0">
-    <channel>
-        <title>Myles' Portfolio</title>
-        <link>${baseUrl}</link>
-        <description>This is Myles' portfolio RSS feed</description>
-        ${itemsXml}
-    </channel>
-  </rss>`
-
-  return new Response(rssFeed, {
+  return new Response(rssFeed(getPosts()), {
     headers: {
       'Content-Type': 'text/xml',
     },

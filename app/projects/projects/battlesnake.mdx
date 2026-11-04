@@ -1,0 +1,22 @@
+---
+title: "Battlesnake AI"
+publishedAt: "2024-04-06"
+summary: "A bot for the online programming game Battlesnake, written in Rust and deployed automatically with Docker."
+source: "https://github.com/MylesJPritchett/ferisss"
+order: 6
+stack:
+  Backend: [Rust, Rocket]
+  Infra: [Docker, GitHub Actions, DigitalOcean]
+---
+
+This is an AI (in the game sense) for the online programming game [Battlesnake](https://battlesnake.com). It is written in Rust and uses the Rocket web framework to communicate with the game server.
+
+Each turn, the Battlesnake servers send a JSON payload to the AI with the current game state. The AI then calculates the next move and returns a JSON payload with the move to make.
+
+To choose a move, it first rules out any move into a wall, its own body or another snake. It then runs a flood fill from each remaining move to count how much of the board it could still reach, and keeps the moves with the most space so it doesn't trap itself. Among those, it heads towards the nearest food.
+
+Every push to `main` builds a Docker image in GitHub Actions, pushes it to Docker Hub and pulls it onto a DigitalOcean Droplet.
+
+The limitation of this AI is that it is not able to look ahead more than one move. To combat this I plan on implementing a Monte Carlo tree search algorithm to simulate possible moves and determine the best move to make.
+
+[Source code on GitHub](https://github.com/MylesJPritchett/ferisss)
